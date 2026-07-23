@@ -7,3 +7,10 @@ Historikken lagres lokalt i nettleseren. Bruk **Eksporter** for sikkerhetskopi. 
 
 ## GitHub Pages
 Pakk ut ZIP-filen og last opp alle filene direkte i roten av repositoriet. Erstatt eksisterende filer og commit. Åpne siden med `?v=ultimate2` første gang dersom gammel cache vises.
+
+
+## Nytt i v2
+- Manuell registrering fra Historikk
+- Dato/klokkeslett, aktivitet, kategori og varighet
+- Valgfri distanse i km
+- Belastning, rating og kommentar
