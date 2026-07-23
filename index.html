@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="WorkoutTimer2 – timer, treningshistorikk, kalender og statistikk">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <title>WorkoutTimer2</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <button id="backBtn" class="icon-btn hidden" aria-label="Tilbake">←</button>
+      <div class="title-wrap">
+        <div class="eyebrow">WORKOUT TIMER</div>
+        <h1 id="pageTitle">WorkoutTimer2</h1>
+      </div>
+      <button id="settingsBtn" class="icon-btn" aria-label="Innstillinger">⚙️</button>
+    </header>
+
+    <main>
+      <section id="homeScreen" class="screen">
+        <div class="hero">
+          <div>
+            <span class="badge">KLAR FOR ØKT</span>
+            <h2>Hva vil du trene?</h2>
+            <p>Velg et program, lag din egen økt eller registrer aktivitet manuelt.</p>
+          </div>
+          <div class="hero-icon">⏱️</div>
+        </div>
+
+        <div id="presetGrid" class="preset-grid"></div>
+
+        <div class="home-actions">
+          <button id="customWorkoutBtn" class="wide-card">
+            <span class="card-icon">＋</span>
+            <span><strong>Lag egen timerøkt</strong><small>Arbeid, hvile, runder og øvelser</small></span>
+          </button>
+          <button id="manualFromHomeBtn" class="wide-card">
+            <span class="card-icon">📝</span>
+            <span><strong>Registrer aktivitet manuelt</strong><small>Tur, golf, volleyball, styrke eller annet</small></span>
+          </button>
+        </div>
+
+        <div class="home-summary">
+          <div class="summary-card"><strong id="homeMonthCount">0</strong><span>økter denne måneden</span></div>
+          <div class="summary-card"><strong id="homeMonthMinutes">0</strong><span>minutter denne måneden</span></div>
+          <div class="summary-card"><strong id="homeStreak">0</strong><span>dagers streak</span></div>
+        </div>
+
+        <a id="spotifyHomeBtn" class="spotify-btn" href="https://open.spotify.com/" target="_blank" rel="noopener noreferrer">
+          <span class="spotify-logo">♪</span><span>Åpne Spotify</span>
+        </a>
+        <button id="installBtn" class="install-btn hidden">📲 Installer app</button>
+      </section>
+
+      <section id="timerScreen" class="screen hidden">
+        <div id="timerCard" class="timer-card">
+          <div class="timer-meta">
+            <span id="roundText"></span>
+            <span id="totalText"></span>
+          </div>
+          <div id="exerciseText" class="exercise hidden"></div>
+          <div id="phaseText" class="phase">KLAR</div>
+          <div id="messageText" class="message">Trykk start når du er klar</div>
+          <div id="timeText" class="time">60</div>
+          <div id="nextText" class="next"></div>
+          <div class="progress-track"><div id="progressBar"></div></div>
+        </div>
+
+        <div class="timer-controls">
+          <button id="startPauseBtn" class="primary-btn">▶ Start</button>
+          <button id="skipBtn" class="secondary-btn">⏭ Hopp over</button>
+          <button id="resetBtn" class="secondary-btn">↺ Nullstill</button>
+        </div>
+
+        <a id="spotifyTimerBtn" class="spotify-btn" href="https://open.spotify.com/" target="_blank" rel="noopener noreferrer">
+          <span class="spotify-logo">♪</span><span>Åpne Spotify</span>
+        </a>
+      </section>
+
+      <section id="customScreen" class="screen hidden">
+        <div class="panel">
+          <h2>Lag egen timerøkt</h2>
+          <label>Navn<input id="customName" type="text" value="Min økt"></label>
+          <label>Kategori
+            <select id="customCategory">
+              <option>Styrke</option><option>Kettlebell</option><option>Volleyball</option>
+              <option>Kondisjon</option><option>Mobilitet</option><option>Golf</option>
+              <option>Tur</option><option>Annet</option>
+            </select>
+          </label>
+          <div class="form-grid">
+            <label>Arbeid (sek)<input id="customWork" type="number" value="60" min="5"></label>
+            <label>Hvile (sek)<input id="customRest" type="number" value="30" min="0"></label>
+            <label>Runder<input id="customRounds" type="number" value="10" min="1"></label>
+            <label>Varsel arbeid<input id="customWorkWarning" type="number" value="10" min="0"></label>
+            <label>Varsel hvile<input id="customRestWarning" type="number" value="5" min="0"></label>
+          </div>
+          <label>Øvelser, én per linje
+            <textarea id="customExercises" rows="6" placeholder="Kettlebell swing&#10;Goblet squat&#10;Push press"></textarea>
+          </label>
+          <div class="form-actions">
+            <button id="saveCustomBtn" class="primary-btn">Start økten</button>
+            <button id="cancelCustomBtn" class="secondary-btn">Avbryt</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="historyScreen" class="screen hidden">
+        <div class="section-header">
+          <div>
+            <h2>Historikk</h2>
+            <p>Alle aktiviteter lagret på denne enheten.</p>
+          </div>
+          <div class="header-actions">
+            <button id="manualActivityBtn" class="small-btn accent">＋ Registrer aktivitet</button>
+            <button id="exportBtn" class="small-btn">Eksporter</button>
+          </div>
+        </div>
+
+        <div id="storageStatus" class="storage-status"></div>
+
+        <div class="filter-row">
+          <select id="historyCategoryFilter">
+            <option value="">Alle kategorier</option>
+            <option>Styrke</option><option>Kettlebell</option><option>Volleyball</option>
+            <option>Kondisjon</option><option>Mobilitet</option><option>Golf</option>
+            <option>Tur</option><option>Annet</option>
+          </select>
+          <select id="historyPeriodFilter">
+            <option value="all">Alle perioder</option>
+            <option value="month">Denne måneden</option>
+            <option value="year">Dette året</option>
+          </select>
+        </div>
+
+        <div id="historyList" class="history-list"></div>
+        <div id="historyEmpty" class="empty-state hidden">Ingen lagrede aktiviteter ennå.</div>
+      </section>
+
+      <section id="calendarScreen" class="screen hidden">
+        <div class="calendar-header">
+          <button id="prevMonthBtn" class="icon-btn">‹</button>
+          <h2 id="calendarTitle"></h2>
+          <button id="nextMonthBtn" class="icon-btn">›</button>
+        </div>
+        <div class="weekday-row">
+          <span>Man</span><span>Tir</span><span>Ons</span><span>Tor</span><span>Fre</span><span>Lør</span><span>Søn</span>
+        </div>
+        <div id="calendarGrid" class="calendar-grid"></div>
+        <div id="calendarDayDetails" class="calendar-details"></div>
+      </section>
+
+      <section id="statsScreen" class="screen hidden">
+        <h2>Statistikk</h2>
+        <div class="stats-grid">
+          <div class="stat-card"><strong id="statSessions">0</strong><span>Aktiviteter</span></div>
+          <div class="stat-card"><strong id="statMinutes">0</strong><span>Minutter</span></div>
+          <div class="stat-card"><strong id="statStreak">0</strong><span>Lengste streak</span></div>
+          <div class="stat-card"><strong id="statRating">–</strong><span>Snittrating</span></div>
+        </div>
+
+        <div class="chart-card">
+          <h3>Aktiviteter per kategori</h3>
+          <div id="categoryChart"></div>
+        </div>
+        <div class="chart-card">
+          <h3>Siste 6 måneder</h3>
+          <div id="monthlyChart"></div>
+        </div>
+        <div class="chart-card">
+          <h3>Mest brukte aktiviteter</h3>
+          <div id="topPrograms"></div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-screen="home"><span>🏠</span><small>Hjem</small></button>
+      <button class="nav-btn" data-screen="history"><span>🧾</span><small>Historikk</small></button>
+      <button class="nav-btn" data-screen="calendar"><span>📅</span><small>Kalender</small></button>
+      <button class="nav-btn" data-screen="stats"><span>📊</span><small>Statistikk</small></button>
+    </nav>
+
+    <aside id="settingsPanel" class="settings-panel hidden">
+      <div class="settings-header">
+        <h2>Innstillinger</h2>
+        <button id="closeSettingsBtn" class="icon-btn">✕</button>
+      </div>
+
+      <label class="toggle-row"><span><strong>Pip</strong><small>Lydsignal ved overganger</small></span><input id="beepToggle" type="checkbox" checked></label>
+      <label class="toggle-row"><span><strong>Norsk stemme</strong><small>Arbeid, hvile og varsler</small></span><input id="voiceToggle" type="checkbox" checked></label>
+      <label class="toggle-row"><span><strong>Vibrasjon</strong><small>Ved overganger</small></span><input id="vibrateToggle" type="checkbox" checked></label>
+      <label class="toggle-row"><span><strong>Hold skjermen på</strong><small>Under økten</small></span><input id="wakeToggle" type="checkbox" checked></label>
+
+      <div class="settings-group">
+        <h3>Spotify</h3>
+        <label>Spillelistelenke<input id="spotifyUrl" type="url" placeholder="https://open.spotify.com/playlist/..."></label>
+        <button id="saveSpotifyBtn" class="small-btn">Lagre Spotify-lenke</button>
+      </div>
+
+      <div class="settings-group">
+        <h3>Sikkerhetskopi</h3>
+        <p>Historikken lagres lokalt i nettleseren. Eksporter data som sikkerhetskopi.</p>
+        <div class="backup-actions">
+          <button id="exportSettingsBtn" class="small-btn">Eksporter data</button>
+          <label class="small-btn import-label">Importer data<input id="importFile" type="file" accept="application/json" hidden></label>
+        </div>
+      </div>
+
+      <button id="testSoundBtn" class="small-btn">🔊 Test lyd</button>
+    </aside>
+
+    <div id="overlay" class="overlay hidden"></div>
+
+    <div id="saveWorkoutModal" class="modal hidden">
+      <div class="modal-card">
+        <div class="celebration">🎉</div>
+        <h2>Bra jobbet!</h2>
+        <p id="saveSummary"></p>
+        <label>Hvordan føltes økten?
+          <select id="effortSelect">
+            <option value="Lett">😀 Lett</option>
+            <option value="Bra" selected>🙂 Bra</option>
+            <option value="Tung">😅 Tung</option>
+            <option value="Knallhard">🥵 Knallhard</option>
+            <option value="Helt ferdig">🤢 Helt ferdig</option>
+          </select>
+        </label>
+        <div class="rating-wrap">
+          <span>Vurder økten</span>
+          <div id="ratingStars" class="rating-stars">
+            <button data-rating="1">☆</button><button data-rating="2">☆</button><button data-rating="3">☆</button><button data-rating="4">☆</button><button data-rating="5">☆</button>
+          </div>
+        </div>
+        <label>Kommentar<textarea id="workoutComment" rows="4" placeholder="Hvordan gikk økten?"></textarea></label>
+        <div class="modal-actions">
+          <button id="saveWorkoutBtn" class="primary-btn">Lagre økten</button>
+          <button id="discardWorkoutBtn" class="secondary-btn">Ikke lagre</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="manualActivityModal" class="modal hidden">
+      <div class="modal-card">
+        <div class="celebration">📝</div>
+        <h2>Registrer aktivitet</h2>
+        <label>Dato og klokkeslett<input id="manualDateTime" type="datetime-local"></label>
+        <label>Aktivitet<input id="manualName" type="text" placeholder="F.eks. Fjelltur, Golf, Volleyballtrening"></label>
+        <label>Kategori
+          <select id="manualCategory">
+            <option>Styrke</option><option>Kettlebell</option><option>Volleyball</option>
+            <option>Kondisjon</option><option>Mobilitet</option><option>Golf</option>
+            <option>Tur</option><option>Annet</option>
+          </select>
+        </label>
+        <div class="form-grid">
+          <label>Timer<input id="manualHours" type="number" min="0" max="24" value="0"></label>
+          <label>Minutter<input id="manualMinutes" type="number" min="0" max="59" value="60"></label>
+        </div>
+        <label>Distanse i km (valgfritt)<input id="manualDistance" type="number" min="0" step="0.1" placeholder="F.eks. 12.5"></label>
+        <label>Hvordan føltes aktiviteten?
+          <select id="manualEffort">
+            <option value="Lett">😀 Lett</option>
+            <option value="Bra" selected>🙂 Bra</option>
+            <option value="Tung">😅 Tung</option>
+            <option value="Knallhard">🥵 Knallhard</option>
+            <option value="Helt ferdig">🤢 Helt ferdig</option>
+          </select>
+        </label>
+        <div class="rating-wrap">
+          <span>Vurder aktiviteten</span>
+          <div id="manualRatingStars" class="rating-stars">
+            <button data-rating="1">☆</button><button data-rating="2">☆</button><button data-rating="3">☆</button><button data-rating="4">☆</button><button data-rating="5">☆</button>
+          </div>
+        </div>
+        <label>Kommentar<textarea id="manualComment" rows="4" placeholder="Skriv en kommentar"></textarea></label>
+        <div class="modal-actions">
+          <button id="saveManualActivityBtn" class="primary-btn">Lagre aktivitet</button>
+          <button id="cancelManualActivityBtn" class="secondary-btn">Avbryt</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>WorkoutTimer2 · Data lagres lokalt på denne enheten</footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
