@@ -20,3 +20,7 @@ Tidligere EMOM 10 er nå et oppgavebasert styrkeprogram:
 - Skip = hopper over oppgaven
 - Postpone = flytter oppgaven til slutten av gjeldende runde
 - Hele økten får total tidsbruk og kan lagres i historikk/Supabase
+
+
+## Kettlebell icon fix
+Kettlebell 60/30 bruker nå `kettlebell.png` i stedet for styrkeløfter-emoji.

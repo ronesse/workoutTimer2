@@ -2,7 +2,7 @@
 "use strict";
 
 const PRESETS=[
-{id:"kettlebell",name:"Kettlebell 60/30",category:"Kettlebell",icon:"🏋️",description:"20 runder · 30 min",work:60,rest:30,rounds:20,workWarning:10,restWarning:5,exercises:["Kettlebell swing","Goblet squat","Push press","Utfall","Renegade row"]},
+{id:"kettlebell",name:"Kettlebell 60/30",category:"Kettlebell",icon:"kettlebell.png",description:"20 runder · 30 min",work:60,rest:30,rounds:20,workWarning:10,restWarning:5,exercises:["Kettlebell swing","Goblet squat","Push press","Utfall","Renegade row"]},
 {id:"tabata",name:"Tabata 20/10",category:"Kondisjon",icon:"🔥",description:"8 runder · 4 min",work:20,rest:10,rounds:8,workWarning:5,restWarning:3,exercises:[]},
 {id:"emom",name:"Styrkeprogram",category:"Styrke",icon:"🏋️",description:"31 aktiviteter · oppgavebasert",work:0,rest:0,rounds:0,workWarning:0,restWarning:0,exercises:[]},
 {id:"volleyball",name:"Volleyball sirkel",category:"Volleyball",icon:"🏐",description:"8 øvelser · 40/20",work:40,rest:20,rounds:8,workWarning:10,restWarning:5,exercises:["Serve","Mottak","Blokkbevegelse","Forsvar","Angrepstilløp","Kjerne","Hopp","Skulderkontroll"]},
@@ -72,7 +72,7 @@ function esc(s=""){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt
 function formatDate(iso){return new Intl.DateTimeFormat("nb-NO",{dateStyle:"medium",timeStyle:"short"}).format(new Date(iso))}
 function currentExercise(r=round){return workout.exercises?.length?workout.exercises[(r-1)%workout.exercises.length]:""}
 
-function renderPresets(){e.presetGrid.innerHTML="";PRESETS.forEach(p=>{const b=document.createElement("button");b.className="preset-card";b.innerHTML=`<span class="card-icon">${p.icon}</span><span><strong>${p.name}</strong><small>${p.description}</small></span>`;b.onclick=()=>selectWorkout(p);e.presetGrid.appendChild(b)})}
+function renderPresets(){e.presetGrid.innerHTML="";PRESETS.forEach(p=>{const b=document.createElement("button");b.className="preset-card";b.innerHTML=`<span class="card-icon">${String(p.icon).toLowerCase().endsWith(".png") ? `<img src="${p.icon}" alt="Kettlebell" class="preset-icon-img">` : p.icon}</span><span><strong>${p.name}</strong><small>${p.description}</small></span>`;b.onclick=()=>selectWorkout(p);e.presetGrid.appendChild(b)})}
 function showScreen(name){
   ["home","timer","sequence","custom","history","calendar","stats"].forEach(n=>e[n+"Screen"].classList.toggle("hidden",n!==name));
   e.backBtn.classList.toggle("hidden",!["timer","sequence","custom"].includes(name));
