@@ -18,7 +18,7 @@
         <div class="eyebrow">WORKOUT TIMER</div>
         <h1 id="pageTitle">WorkoutTimer2</h1>
       </div>
-      <button id="settingsBtn" class="icon-btn" aria-label="Innstillinger">⚙️</button>
+      <div class="header-actions-top"><button id="accountBtn" class="icon-btn" aria-label="Konto">👤</button><button id="settingsBtn" class="icon-btn" aria-label="Innstillinger">⚙️</button></div>
     </header>
 
     <main>
@@ -45,7 +45,7 @@
           </button>
         </div>
 
-        <div class="home-summary">
+        <div id="syncBanner" class="sync-banner"><span id="syncText">Ikke logget inn · aktiviteter lagres lokalt</span><button id="syncNowBtn" class="mini-btn hidden">Synkroniser</button></div><div class="home-summary">
           <div class="summary-card"><strong id="homeMonthCount">0</strong><span>økter denne måneden</span></div>
           <div class="summary-card"><strong id="homeMonthMinutes">0</strong><span>minutter denne måneden</span></div>
           <div class="summary-card"><strong id="homeStreak">0</strong><span>dagers streak</span></div>
@@ -217,6 +217,24 @@
 
     <div id="overlay" class="overlay hidden"></div>
 
+
+    <div id="accountModal" class="modal hidden">
+      <div class="modal-card">
+        <div class="settings-header"><div><div class="eyebrow">KONTO</div><h2 id="accountTitle">Logg inn</h2></div><button id="closeAccountBtn" class="icon-btn">✕</button></div>
+        <div id="loggedOutPanel">
+          <p>Logg inn for å lagre treningshistorikken i databasen og bruke den på flere enheter.</p>
+          <label>E-post<input id="authEmail" type="email" autocomplete="email" placeholder="navn@epost.no"></label>
+          <label>Passord<input id="authPassword" type="password" autocomplete="current-password" minlength="6" placeholder="Minst 6 tegn"></label>
+          <div class="auth-actions"><button id="loginBtn" class="primary-btn">Logg inn</button><button id="signupBtn" class="secondary-btn">Opprett bruker</button></div>
+          <button id="forgotPasswordBtn" class="link-btn">Glemt passord?</button><p id="authMessage" class="auth-message"></p>
+        </div>
+        <div id="loggedInPanel" class="hidden">
+          <div class="account-card"><div class="account-avatar">👤</div><div><strong id="accountEmail"></strong><small>Innlogget og klar for synkronisering</small></div></div>
+          <button id="syncAccountBtn" class="primary-btn full-btn">↻ Synkroniser nå</button><button id="logoutBtn" class="secondary-btn full-btn">Logg ut</button>
+          <p class="auth-message">Aktiviteter lagres lokalt og synkroniseres til Supabase.</p>
+        </div>
+      </div>
+    </div>
     <div id="saveWorkoutModal" class="modal hidden">
       <div class="modal-card">
         <div class="celebration">🎉</div>
@@ -289,6 +307,8 @@
     <footer>WorkoutTimer2 · Data lagres lokalt på denne enheten</footer>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="db.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
