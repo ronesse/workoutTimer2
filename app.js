@@ -4,20 +4,63 @@
 const PRESETS=[
 {id:"kettlebell",name:"Kettlebell 60/30",category:"Kettlebell",icon:"🏋️",description:"20 runder · 30 min",work:60,rest:30,rounds:20,workWarning:10,restWarning:5,exercises:["Kettlebell swing","Goblet squat","Push press","Utfall","Renegade row"]},
 {id:"tabata",name:"Tabata 20/10",category:"Kondisjon",icon:"🔥",description:"8 runder · 4 min",work:20,rest:10,rounds:8,workWarning:5,restWarning:3,exercises:[]},
-{id:"emom",name:"EMOM 10",category:"Styrke",icon:"⏱️",description:"45/15 · 10 runder",work:45,rest:15,rounds:10,workWarning:10,restWarning:5,exercises:[]},
+{id:"emom",name:"Styrkeprogram",category:"Styrke",icon:"🏋️",description:"31 aktiviteter · oppgavebasert",work:0,rest:0,rounds:0,workWarning:0,restWarning:0,exercises:[]},
 {id:"volleyball",name:"Volleyball sirkel",category:"Volleyball",icon:"🏐",description:"8 øvelser · 40/20",work:40,rest:20,rounds:8,workWarning:10,restWarning:5,exercises:["Serve","Mottak","Blokkbevegelse","Forsvar","Angrepstilløp","Kjerne","Hopp","Skulderkontroll"]},
 {id:"strength",name:"Styrke 45/15",category:"Styrke",icon:"💪",description:"12 runder · 12 min",work:45,rest:15,rounds:12,workWarning:10,restWarning:5,exercises:[]}
 ];
 
 const $=id=>document.getElementById(id);
 const e={};
-["backBtn","settingsBtn","pageTitle","homeScreen","timerScreen","customScreen","historyScreen","calendarScreen","statsScreen","presetGrid","customWorkoutBtn","manualFromHomeBtn","homeMonthCount","homeMonthMinutes","homeStreak","spotifyHomeBtn","spotifyTimerBtn","installBtn","timerCard","roundText","totalText","exerciseText","phaseText","messageText","timeText","nextText","progressBar","startPauseBtn","skipBtn","resetBtn","customName","customCategory","customWork","customRest","customRounds","customWorkWarning","customRestWarning","customExercises","saveCustomBtn","cancelCustomBtn","manualActivityBtn","exportBtn","storageStatus","historyCategoryFilter","historyPeriodFilter","historyList","historyEmpty","prevMonthBtn","nextMonthBtn","calendarTitle","calendarGrid","calendarDayDetails","statSessions","statMinutes","statStreak","statRating","categoryChart","monthlyChart","topPrograms","settingsPanel","closeSettingsBtn","overlay","beepToggle","voiceToggle","vibrateToggle","wakeToggle","spotifyUrl","saveSpotifyBtn","exportSettingsBtn","importFile","testSoundBtn","saveWorkoutModal","saveSummary","effortSelect","ratingStars","workoutComment","saveWorkoutBtn","discardWorkoutBtn","manualActivityModal","manualDateTime","manualName","manualCategory","manualHours","manualMinutes","manualDistance","manualEffort","manualRatingStars","manualComment","saveManualActivityBtn","cancelManualActivityBtn"].forEach(id=>e[id]=$(id));
+["backBtn","settingsBtn","pageTitle","homeScreen","timerScreen","sequenceScreen","customScreen","historyScreen","calendarScreen","statsScreen","presetGrid","customWorkoutBtn","manualFromHomeBtn","homeMonthCount","homeMonthMinutes","homeStreak","spotifyHomeBtn","spotifyTimerBtn","installBtn","timerCard","roundText","totalText","exerciseText","phaseText","messageText","timeText","nextText","progressBar","startPauseBtn","skipBtn","resetBtn","sequenceRoundTitle","sequenceElapsed","sequenceProgressText","sequenceProgressBar","sequenceActivity","sequenceReps","sequenceLoad","sequenceDesc","sequenceNextActivity","sequenceNextMeta","sequenceCompleteBtn","sequenceSkipBtn","sequencePostponeBtn","sequenceEndBtn","customName","customCategory","customWork","customRest","customRounds","customWorkWarning","customRestWarning","customExercises","saveCustomBtn","cancelCustomBtn","manualActivityBtn","exportBtn","storageStatus","historyCategoryFilter","historyPeriodFilter","historyList","historyEmpty","prevMonthBtn","nextMonthBtn","calendarTitle","calendarGrid","calendarDayDetails","statSessions","statMinutes","statStreak","statRating","categoryChart","monthlyChart","topPrograms","settingsPanel","closeSettingsBtn","overlay","beepToggle","voiceToggle","vibrateToggle","wakeToggle","spotifyUrl","saveSpotifyBtn","exportSettingsBtn","importFile","testSoundBtn","saveWorkoutModal","saveSummary","effortSelect","ratingStars","workoutComment","saveWorkoutBtn","discardWorkoutBtn","manualActivityModal","manualDateTime","manualName","manualCategory","manualHours","manualMinutes","manualDistance","manualEffort","manualRatingStars","manualComment","saveManualActivityBtn","cancelManualActivityBtn"].forEach(id=>e[id]=$(id));
 
 const HISTORY_KEY="workouttimer2_history_v1";
 const SETTINGS_KEY="workouttimer2_settings_v1";
 const CUSTOM_KEY="workouttimer2_custom_v1";
 
 let workout=PRESETS[0],running=false,finished=false,phase="work",round=1,remaining=workout.work,elapsed=0,timerHandle=null,nextTickAt=0,audioContext=null,wakeLock=null,saveRating=4,manualRating=4,currentCalendar=new Date(),selectedDate=null,deferredInstallPrompt=null,editingId=null;
+
+const STRENGTH_SEQUENCE = [
+{order:1,activity:"Knebøy",round:1,reps:"10",load:"50 %",desc:"4 x 10 (50%)"},
+{order:2,activity:"Utfall front left",round:1,reps:"10",load:"20 %",desc:"3 x 8 hvert ben (20%)"},
+{order:3,activity:"Nedtrekk",round:1,reps:"10",load:"80 %",desc:"3 x 10 (80%)"},
+{order:4,activity:"Legghev",round:1,reps:"20",load:"",desc:"3 x 10 hvert ben (50%)"},
+{order:5,activity:"Skulderhev",round:1,reps:"20",load:"",desc:"3 x 10 hver side"},
+{order:6,activity:"Jon spesial",round:1,reps:"25",load:"",desc:"3 x 25"},
+{order:7,activity:"Hoftehev",round:1,reps:"10",load:"",desc:"3 x 10 annenhver side"},
+{order:8,activity:"Valgfri",round:1,reps:"",load:"",desc:"3 x ??"},
+{order:9,activity:"Lårcurl",round:1,reps:"10",load:"",desc:"3 x 10 (50%)"},
+{order:10,activity:"Lårstrekk",round:1,reps:"10",load:"",desc:"3 x 10 (50%)"},
+{order:11,activity:"Knebøy",round:2,reps:"10",load:"50 %",desc:"4 x 10 (50%)"},
+{order:12,activity:"Utfall front left",round:2,reps:"10",load:"20 %",desc:"3 x 8 hvert ben (20%)"},
+{order:13,activity:"Nedtrekk",round:2,reps:"10",load:"80 %",desc:"3 x 10 (80%)"},
+{order:14,activity:"Legghev",round:2,reps:"20",load:"50 %",desc:"3 x 10 hvert ben (50%)"},
+{order:15,activity:"Skulderhev",round:2,reps:"20",load:"",desc:"3 x 10 hver side"},
+{order:16,activity:"Jon spesial",round:2,reps:"25",load:"",desc:"3 x 25"},
+{order:17,activity:"Hoftehev",round:2,reps:"10",load:"",desc:"3 x 10 annenhver side"},
+{order:18,activity:"Valgfri",round:2,reps:"",load:"",desc:"3 x ??"},
+{order:19,activity:"Lårcurl",round:2,reps:"10",load:"50 %",desc:"3 x 10 (50%)"},
+{order:20,activity:"Lårstrekk",round:2,reps:"10",load:"50 %",desc:"3 x 10 (50%)"},
+{order:21,activity:"Knebøy",round:3,reps:"10",load:"50 %",desc:"4 x 10 (50%)"},
+{order:22,activity:"Utfall front left",round:3,reps:"10",load:"20 %",desc:"3 x 8 hvert ben (20%)"},
+{order:23,activity:"Nedtrekk",round:3,reps:"10",load:"80 %",desc:"3 x 10 (80%)"},
+{order:24,activity:"Legghev",round:3,reps:"20",load:"50 %",desc:"3 x 10 hvert ben (50%)"},
+{order:25,activity:"Skulderhev",round:3,reps:"20",load:"",desc:"3 x 10 hver side"},
+{order:26,activity:"Jon spesial",round:3,reps:"25",load:"",desc:"3 x 25"},
+{order:27,activity:"Hoftehev",round:3,reps:"10",load:"",desc:"3 x 10 annenhver side"},
+{order:28,activity:"Valgfri",round:3,reps:"",load:"",desc:"3 x ??"},
+{order:29,activity:"Lårcurl",round:3,reps:"10",load:"50 %",desc:"3 x 10 (50%)"},
+{order:30,activity:"Lårstrekk",round:3,reps:"10",load:"50 %",desc:"3 x 10 (50%)"},
+{order:31,activity:"Knebøy",round:4,reps:"10",load:"50 %",desc:"4 x 10 (50%)"}
+];
+
+let sequenceQueue=[];
+let sequenceCompleted=[];
+let sequenceSkipped=[];
+let sequenceStartedAt=null;
+let sequenceElapsedSeconds=0;
+let sequenceInterval=null;
+let sequenceActive=false;
+
 
 function getHistory(){try{const v=JSON.parse(localStorage.getItem(HISTORY_KEY)||"[]");return Array.isArray(v)?v:[]}catch{return[]}}
 function setHistory(items){try{localStorage.setItem(HISTORY_KEY,JSON.stringify(items));return true}catch(err){alert("Kunne ikke lagre aktiviteten lokalt.");return false}}
@@ -31,16 +74,138 @@ function currentExercise(r=round){return workout.exercises?.length?workout.exerc
 
 function renderPresets(){e.presetGrid.innerHTML="";PRESETS.forEach(p=>{const b=document.createElement("button");b.className="preset-card";b.innerHTML=`<span class="card-icon">${p.icon}</span><span><strong>${p.name}</strong><small>${p.description}</small></span>`;b.onclick=()=>selectWorkout(p);e.presetGrid.appendChild(b)})}
 function showScreen(name){
-  ["home","timer","custom","history","calendar","stats"].forEach(n=>e[n+"Screen"].classList.toggle("hidden",n!==name));
-  e.backBtn.classList.toggle("hidden",!["timer","custom"].includes(name));
+  ["home","timer","sequence","custom","history","calendar","stats"].forEach(n=>e[n+"Screen"].classList.toggle("hidden",n!==name));
+  e.backBtn.classList.toggle("hidden",!["timer","sequence","custom"].includes(name));
   document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.screen===name));
-  e.pageTitle.textContent=name==="timer"?workout.name:({home:"WorkoutTimer2",history:"Historikk",calendar:"Kalender",stats:"Statistikk",custom:"Egen økt"}[name]||"WorkoutTimer2");
+  e.pageTitle.textContent=name==="timer"?workout.name:({home:"WorkoutTimer2",sequence:"Styrkeprogram",history:"Historikk",calendar:"Kalender",stats:"Statistikk",custom:"Egen økt"}[name]||"WorkoutTimer2");
   if(name==="home")renderHome();
   if(name==="history")renderHistory();
   if(name==="calendar")renderCalendar();
   if(name==="stats")renderStats();
 }
-function selectWorkout(p){workout=JSON.parse(JSON.stringify(p));resetTimer();showScreen("timer")}
+function selectWorkout(p){
+  if(p.id==="emom"){startStrengthSequence();return}
+  workout=JSON.parse(JSON.stringify(p));resetTimer();showScreen("timer")
+}
+
+
+function formatElapsed(sec){
+  const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;
+  return h>0?`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`:`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+}
+function startStrengthSequence(){
+  pauseTimer();
+  sequenceQueue=STRENGTH_SEQUENCE.map(x=>({...x}));
+  sequenceCompleted=[];
+  sequenceSkipped=[];
+  sequenceElapsedSeconds=0;
+  sequenceStartedAt=Date.now();
+  sequenceActive=true;e.sequenceCompleteBtn.disabled=false;e.sequenceSkipBtn.disabled=false;e.sequencePostponeBtn.disabled=false;
+  clearInterval(sequenceInterval);
+  sequenceInterval=setInterval(()=>{
+    if(!sequenceActive)return;
+    sequenceElapsedSeconds=Math.floor((Date.now()-sequenceStartedAt)/1000);
+    if(e.sequenceElapsed)e.sequenceElapsed.textContent=formatElapsed(sequenceElapsedSeconds);
+  },500);
+  requestWake();
+  showScreen("sequence");
+  renderStrengthSequence();
+}
+function renderStrengthSequence(){
+  const current=sequenceQueue[0];
+  if(!current){finishStrengthSequence();return}
+  const next=sequenceQueue[1]||null;
+  const doneCount=sequenceCompleted.length+sequenceSkipped.length;
+  e.sequenceRoundTitle.textContent=`Runde ${current.round}`;
+  e.sequenceElapsed.textContent=formatElapsed(sequenceElapsedSeconds);
+  e.sequenceProgressText.textContent=`Aktivitet ${doneCount+1} av ${STRENGTH_SEQUENCE.length} · ${sequenceCompleted.length} fullført`;
+  e.sequenceProgressBar.style.width=`${(doneCount/STRENGTH_SEQUENCE.length)*100}%`;
+  e.sequenceActivity.textContent=current.activity;
+  e.sequenceReps.textContent=current.reps||"–";
+  e.sequenceLoad.textContent=current.load||"–";
+  e.sequenceDesc.textContent=current.desc||"";
+  if(next){
+    e.sequenceNextActivity.textContent=next.activity;
+    const parts=[];
+    if(next.reps)parts.push(`${next.reps} reps`);
+    if(next.load)parts.push(next.load);
+    parts.push(`Runde ${next.round}`);
+    e.sequenceNextMeta.textContent=parts.join(" · ");
+  }else{
+    e.sequenceNextActivity.textContent="Ferdig";
+    e.sequenceNextMeta.textContent="Siste aktivitet";
+  }
+}
+function completeSequenceActivity(){
+  if(!sequenceQueue.length)return;
+  sequenceCompleted.push(sequenceQueue.shift());
+  renderStrengthSequence();
+}
+function skipSequenceActivity(){
+  if(!sequenceQueue.length)return;
+  sequenceSkipped.push(sequenceQueue.shift());
+  renderStrengthSequence();
+}
+function postponeSequenceActivity(){
+  if(sequenceQueue.length<=1)return;
+  const current=sequenceQueue[0];
+  const sameRoundIndexes=[];
+  for(let i=1;i<sequenceQueue.length;i++){
+    if(sequenceQueue[i].round===current.round)sameRoundIndexes.push(i);
+    else if(sequenceQueue[i].round>current.round)break;
+  }
+  if(!sameRoundIndexes.length){
+    alert("Dette er siste aktivitet i runden og kan ikke skyves lenger bak.");
+    return;
+  }
+  const item=sequenceQueue.shift();
+  const lastSameRoundIndex=sequenceQueue.findLastIndex?sequenceQueue.findLastIndex(x=>x.round===item.round):(()=>{
+    let idx=-1;sequenceQueue.forEach((x,i)=>{if(x.round===item.round)idx=i});return idx;
+  })();
+  sequenceQueue.splice(lastSameRoundIndex+1,0,item);
+  renderStrengthSequence();
+}
+function stopStrengthSequence(){
+  sequenceActive=false;
+  clearInterval(sequenceInterval);
+  releaseWake();
+}
+function finishStrengthSequence(){
+  stopStrengthSequence();
+  e.sequenceProgressBar.style.width="100%";
+  e.sequenceActivity.textContent="Økten er ferdig";
+  e.sequenceReps.textContent="✓";
+  e.sequenceLoad.textContent="✓";
+  e.sequenceDesc.textContent=`${sequenceCompleted.length} fullført · ${sequenceSkipped.length} hoppet over`;
+  e.sequenceNextActivity.textContent="Bra jobbet!";
+  e.sequenceNextMeta.textContent=`Total tid: ${formatElapsed(sequenceElapsedSeconds)}`;
+  e.sequenceCompleteBtn.disabled=true;
+  e.sequenceSkipBtn.disabled=true;
+  e.sequencePostponeBtn.disabled=true;
+  workout={
+    id:"emom",
+    name:"Styrkeprogram",
+    category:"Styrke",
+    work:0,rest:0,rounds:STRENGTH_SEQUENCE.length,
+    exercises:[]
+  };
+  elapsed=sequenceElapsedSeconds;
+  finished=true;
+  saveRating=4;
+  e.saveSummary.textContent=`Styrkeprogram · ${formatElapsed(sequenceElapsedSeconds)} · ${sequenceCompleted.length} fullført`;
+  setTimeout(()=>{
+    e.workoutComment.value="";
+    e.effortSelect.value="Bra";
+    renderStars(e.ratingStars,saveRating);
+    e.saveWorkoutModal.classList.remove("hidden");
+  },400);
+}
+function abortStrengthSequence(){
+  if(confirm("Vil du avslutte styrkeøkten uten å fullføre programmet?")){
+    stopStrengthSequence();
+    showScreen("home");
+  }
+}
 
 function renderTimer(){
   const total=totalDuration(),pct=phaseDuration()?((phaseDuration()-remaining)/phaseDuration())*100:100;
@@ -76,7 +241,7 @@ function finishWorkout(){running=false;finished=true;remaining=0;elapsed=totalDu
 function renderStars(container,value){container.querySelectorAll("button").forEach(b=>{const n=Number(b.dataset.rating);b.textContent=n<=value?"★":"☆";b.classList.toggle("selected",n===value)})}
 function openSaveWorkoutModal(){saveRating=4;e.workoutComment.value="";e.effortSelect.value="Bra";e.saveSummary.textContent=`${workout.name} · ${Math.round(totalDuration()/60)} minutter`;renderStars(e.ratingStars,saveRating);e.saveWorkoutModal.classList.remove("hidden")}
 function saveCompletedWorkout(){
-  const d=new Date(),item={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),programId:workout.id,programName:workout.name,category:workout.category||"Annet",completedAt:d.toISOString(),dateKey:localDateKey(d),durationSeconds:totalDuration(),rating:saveRating,effort:e.effortSelect.value,comment:e.workoutComment.value.trim(),distanceKm:null,manual:false};
+  const d=new Date(),item={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),programId:workout.id,programName:workout.name,category:workout.category||"Annet",completedAt:d.toISOString(),dateKey:localDateKey(d),durationSeconds:(workout.id==="emom"?sequenceElapsedSeconds:totalDuration()),rating:saveRating,effort:e.effortSelect.value,comment:e.workoutComment.value.trim(),distanceKm:null,manual:false,workSeconds:(workout.id==="emom"?null:workout.work),restSeconds:(workout.id==="emom"?null:workout.rest),rounds:(workout.id==="emom"?STRENGTH_SEQUENCE.length:workout.rounds)};
   const items=getHistory();items.unshift(item);if(!setHistory(items))return;e.saveWorkoutModal.classList.add("hidden");renderHome();showScreen("history");
 }
 
@@ -161,13 +326,17 @@ function exportData(){const blob=new Blob([JSON.stringify({version:1,exportedAt:
 async function importData(file){try{const data=JSON.parse(await file.text());if(!Array.isArray(data.history))throw new Error();if(!confirm(`Importere ${data.history.length} aktiviteter? Eksisterende historikk blir erstattet.`))return;setHistory(data.history);if(data.settings)localStorage.setItem(SETTINGS_KEY,JSON.stringify(data.settings));if(data.custom)localStorage.setItem(CUSTOM_KEY,JSON.stringify(data.custom));loadSettings();loadCustom();renderHome();alert("Data er importert.")}catch{alert("Kunne ikke lese sikkerhetskopien.")}}
 
 document.querySelectorAll(".nav-btn").forEach(b=>b.onclick=()=>showScreen(b.dataset.screen));
-e.backBtn.onclick=()=>{pauseTimer();showScreen("home")};
+e.backBtn.onclick=()=>{if(sequenceActive){abortStrengthSequence()}else{pauseTimer();showScreen("home")}};
 e.customWorkoutBtn.onclick=()=>showScreen("custom");
 e.manualFromHomeBtn.onclick=()=>openManualModal();
 e.manualActivityBtn.onclick=()=>openManualModal();
 e.cancelCustomBtn.onclick=()=>showScreen("home");
 e.saveCustomBtn.onclick=buildCustom;
 e.startPauseBtn.onclick=()=>running?pauseTimer():startTimer();
+e.sequenceCompleteBtn.onclick=completeSequenceActivity;
+e.sequenceSkipBtn.onclick=skipSequenceActivity;
+e.sequencePostponeBtn.onclick=postponeSequenceActivity;
+e.sequenceEndBtn.onclick=abortStrengthSequence;
 e.skipBtn.onclick=skipPhase;
 e.resetBtn.onclick=resetTimer;
 e.settingsBtn.onclick=openSettings;

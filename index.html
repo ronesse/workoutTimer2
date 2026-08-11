@@ -82,6 +82,53 @@
         </a>
       </section>
 
+
+      <section id="sequenceScreen" class="screen hidden">
+        <div class="sequence-card">
+          <div class="sequence-top">
+            <div>
+              <div class="eyebrow">STYRKEPROGRAM</div>
+              <h2 id="sequenceRoundTitle">Runde 1</h2>
+            </div>
+            <div class="elapsed-wrap">
+              <small>Tid</small>
+              <strong id="sequenceElapsed">00:00</strong>
+            </div>
+          </div>
+
+          <div class="sequence-progress">
+            <span id="sequenceProgressText">Aktivitet 1 av 31</span>
+            <div class="progress-track"><div id="sequenceProgressBar"></div></div>
+          </div>
+
+          <div class="task-card current-task">
+            <span class="task-label">NÅ</span>
+            <h2 id="sequenceActivity">Knebøy</h2>
+
+            <div class="task-stats">
+              <div><small>Reps</small><strong id="sequenceReps">10</strong></div>
+              <div><small>Load</small><strong id="sequenceLoad">50 %</strong></div>
+            </div>
+
+            <p id="sequenceDesc" class="task-desc">4 x 10 (50%)</p>
+          </div>
+
+          <div class="task-card next-task">
+            <span class="task-label">NESTE</span>
+            <h3 id="sequenceNextActivity">Utfall front left</h3>
+            <p id="sequenceNextMeta">10 reps · 20 %</p>
+          </div>
+
+          <div class="sequence-actions">
+            <button id="sequenceCompleteBtn" class="primary-btn complete-btn">✓ Fullført</button>
+            <button id="sequenceSkipBtn" class="secondary-btn">⏭ Skip</button>
+            <button id="sequencePostponeBtn" class="secondary-btn postpone-btn">↻ Postpone</button>
+          </div>
+
+          <button id="sequenceEndBtn" class="link-btn danger-link">Avslutt økten</button>
+        </div>
+      </section>
+
       <section id="customScreen" class="screen hidden">
         <div class="panel">
           <h2>Lag egen timerøkt</h2>
