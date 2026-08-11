@@ -1,4 +1,4 @@
-const CACHE_NAME="workouttimer2-styrke-dag1-v4";
+const CACHE_NAME="workouttimer2-styrke-dag2-v5";
 const ASSETS=["./","./index.html","./style.css","./db.js","./app.js","./manifest.webmanifest","./icon.svg","./kettlebell.png"];
 self.addEventListener("install",e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(ASSETS)))});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});

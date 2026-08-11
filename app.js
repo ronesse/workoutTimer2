@@ -4,8 +4,8 @@
 const PRESETS=[
 {id:"kettlebell",name:"Kettlebell 60/30",category:"Kettlebell",icon:"kettlebell.png",description:"20 runder · 30 min",work:60,rest:30,rounds:20,workWarning:10,restWarning:5,exercises:["Kettlebell swing","Goblet squat","Push press","Utfall","Renegade row"]},
 {id:"tabata",name:"Tabata 20/10",category:"Kondisjon",icon:"🔥",description:"8 runder · 4 min",work:20,rest:10,rounds:8,workWarning:5,restWarning:3,exercises:[]},
-{id:"emom",name:"Styrke Dag1",category:"Styrke",icon:"🏋️",description:"43 aktiviteter · oppgavebasert",work:0,rest:0,rounds:0,workWarning:0,restWarning:0,exercises:[]},
-{id:"volleyball",name:"Volleyball sirkel",category:"Volleyball",icon:"🏐",description:"8 øvelser · 40/20",work:40,rest:20,rounds:8,workWarning:10,restWarning:5,exercises:["Serve","Mottak","Blokkbevegelse","Forsvar","Angrepstilløp","Kjerne","Hopp","Skulderkontroll"]},
+{id:"emom",name:sequenceProgramName,category:"Styrke",icon:"🏋️",description:"43 aktiviteter · oppgavebasert",work:0,rest:0,rounds:0,workWarning:0,restWarning:0,exercises:[]},
+{id:"volleyball",name:"Styrke Dag2",category:"Styrke",icon:"🏋️",description:"46 aktiviteter · oppgavebasert",work:0,rest:0,rounds:0,workWarning:0,restWarning:0,exercises:[]},
 {id:"strength",name:"Styrke 45/15",category:"Styrke",icon:"💪",description:"12 runder · 12 min",work:45,rest:15,rounds:12,workWarning:10,restWarning:5,exercises:[]}
 ];
 
@@ -69,7 +69,57 @@ const STRENGTH_SEQUENCE = [
 {group:"Main",order:43,activity:"Knebøy",round:4,reps:"10",load:"50 %",desc:"4 x 10 (50%)"}
 ]
 
-let sequenceQueue=[];
+let sequenceProgramName="Styrke Dag1",sequenceQueue=[];
+
+const STRENGTH_SEQUENCE_DAY2 = [
+{group:"WarmUp",order:1,activity:"Ryggliggende kryss",round:1,reps:"8",load:"",desc:"2 x 8 hver side"},
+{group:"WarmUp",order:2,activity:"Sideveis utfall",round:1,reps:"12",load:"",desc:"2 x 12 annenhver side"},
+{group:"WarmUp",order:3,activity:"Planke rotasjon",round:1,reps:"8",load:"",desc:"2 x 8 hver side"},
+{group:"WarmUp",order:4,activity:"Knebøy",round:1,reps:"15",load:"",desc:"2 x 15"},
+{group:"WarmUp",order:5,activity:"Skorpion",round:1,reps:"12",load:"",desc:"2 x 12 annenhver side"},
+{group:"WarmUp",order:6,activity:"Push ups",round:1,reps:"10",load:"",desc:"2 x 10"},
+{group:"WarmUp",order:7,activity:"Ryggliggende kryss",round:2,reps:"8",load:"",desc:"2 x 8 hver side"},
+{group:"WarmUp",order:8,activity:"Sideveis utfall",round:2,reps:"12",load:"",desc:"2 x 12 annenhver side"},
+{group:"WarmUp",order:9,activity:"Planke rotasjon",round:2,reps:"8",load:"",desc:"2 x 8 hver side"},
+{group:"WarmUp",order:10,activity:"Knebøy",round:2,reps:"15",load:"",desc:"2 x 15"},
+{group:"WarmUp",order:11,activity:"Skorpion",round:2,reps:"12",load:"",desc:"2 x 12 annenhver side"},
+{group:"WarmUp",order:12,activity:"Push ups",round:2,reps:"10",load:"",desc:"2 x 10"},
+{group:"Main",order:13,activity:"Knebøy",round:1,reps:"10",load:"50 %",desc:"4 x 10 (50%)"},
+{group:"Main",order:14,activity:"Bulgarsk",round:1,reps:"8",load:"30 %",desc:"3 x 8 hvert ben (30%)"},
+{group:"Main",order:15,activity:"Step up",round:1,reps:"10",load:"20 %",desc:"3 x 10 hvert ben (20%)"},
+{group:"Main",order:16,activity:"Opptrekk stang",round:1,reps:"10",load:"",desc:"3 x 10"},
+{group:"Main",order:17,activity:"Legghev",round:1,reps:"10",load:"50 %",desc:"3 x 10 hvert ben (50%)"},
+{group:"Main",order:18,activity:"Skulderpress",round:1,reps:"10",load:"70 %",desc:"3 x 10 (70%)"},
+{group:"Main",order:19,activity:"Sideplanke",round:1,reps:"10",load:"",desc:"3 x 10 hver side"},
+{group:"Main",order:20,activity:"Hoftehev ball",round:1,reps:"10",load:"",desc:"3 x 10"},
+{group:"Main",order:21,activity:"Pull over",round:1,reps:"10",load:"60 %",desc:"3 x 10 (60%)"},
+{group:"Main",order:22,activity:"Lårcurl",round:1,reps:"10",load:"50 %",desc:"3 x 10 (50%)"},
+{group:"Main",order:23,activity:"Lårstrekk",round:1,reps:"10",load:"50 %",desc:"3 x 10 (50%)"},
+{group:"Main",order:24,activity:"Knebøy",round:2,reps:"10",load:"50 %",desc:"4 x 10 (50%)"},
+{group:"Main",order:25,activity:"Bulgarsk",round:2,reps:"8",load:"30 %",desc:"3 x 8 hvert ben (30%)"},
+{group:"Main",order:26,activity:"Step up",round:2,reps:"10",load:"20 %",desc:"3 x 10 hvert ben (20%)"},
+{group:"Main",order:27,activity:"Opptrekk stang",round:2,reps:"10",load:"",desc:"3 x 10"},
+{group:"Main",order:28,activity:"Legghev",round:2,reps:"10",load:"50 %",desc:"3 x 10 hvert ben (50%)"},
+{group:"Main",order:29,activity:"Skulderpress",round:2,reps:"10",load:"70 %",desc:"3 x 10 (70%)"},
+{group:"Main",order:30,activity:"Sideplanke",round:2,reps:"10",load:"",desc:"3 x 10 hver side"},
+{group:"Main",order:31,activity:"Hoftehev ball",round:2,reps:"10",load:"",desc:"3 x 10"},
+{group:"Main",order:32,activity:"Pull over",round:2,reps:"10",load:"60 %",desc:"3 x 10 (60%)"},
+{group:"Main",order:33,activity:"Lårcurl",round:2,reps:"10",load:"50 %",desc:"3 x 10 (50%)"},
+{group:"Main",order:34,activity:"Lårstrekk",round:2,reps:"10",load:"50 %",desc:"3 x 10 (50%)"},
+{group:"Main",order:35,activity:"Knebøy",round:3,reps:"10",load:"50 %",desc:"4 x 10 (50%)"},
+{group:"Main",order:36,activity:"Bulgarsk",round:3,reps:"8",load:"30 %",desc:"3 x 8 hvert ben (30%)"},
+{group:"Main",order:37,activity:"Step up",round:3,reps:"10",load:"20 %",desc:"3 x 10 hvert ben (20%)"},
+{group:"Main",order:38,activity:"Opptrekk stang",round:3,reps:"10",load:"",desc:"3 x 10"},
+{group:"Main",order:39,activity:"Legghev",round:3,reps:"10",load:"50 %",desc:"3 x 10 hvert ben (50%)"},
+{group:"Main",order:40,activity:"Skulderpress",round:3,reps:"10",load:"70 %",desc:"3 x 10 (70%)"},
+{group:"Main",order:41,activity:"Sideplanke",round:3,reps:"10",load:"",desc:"3 x 10 hver side"},
+{group:"Main",order:42,activity:"Hoftehev ball",round:3,reps:"10",load:"",desc:"3 x 10"},
+{group:"Main",order:43,activity:"Pull over",round:3,reps:"10",load:"60 %",desc:"3 x 10 (60%)"},
+{group:"Main",order:44,activity:"Lårcurl",round:3,reps:"10",load:"50 %",desc:"3 x 10 (50%)"},
+{group:"Main",order:45,activity:"Lårstrekk",round:3,reps:"10",load:"50 %",desc:"3 x 10 (50%)"},
+{group:"Main",order:46,activity:"Knebøy",round:4,reps:"10",load:"50 %",desc:"4 x 10 (50%)"}
+];
+
 let sequenceCompleted=[];
 let sequenceSkipped=[];
 let sequenceStartedAt=null;
@@ -93,14 +143,15 @@ function showScreen(name){
   ["home","timer","sequence","custom","history","calendar","stats"].forEach(n=>e[n+"Screen"].classList.toggle("hidden",n!==name));
   e.backBtn.classList.toggle("hidden",!["timer","sequence","custom"].includes(name));
   document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.screen===name));
-  e.pageTitle.textContent=name==="timer"?workout.name:({home:"WorkoutTimer2",sequence:"Styrke Dag1",history:"Historikk",calendar:"Kalender",stats:"Statistikk",custom:"Egen økt"}[name]||"WorkoutTimer2");
+  e.pageTitle.textContent=name==="timer"?workout.name:({home:"WorkoutTimer2",sequence:sequenceProgramName,history:"Historikk",calendar:"Kalender",stats:"Statistikk",custom:"Egen økt"}[name]||"WorkoutTimer2");
   if(name==="home")renderHome();
   if(name==="history")renderHistory();
   if(name==="calendar")renderCalendar();
   if(name==="stats")renderStats();
 }
 function selectWorkout(p){
-  if(p.id==="emom"){startStrengthSequence();return}
+  if(p.id==="emom"){startStrengthSequence(STRENGTH_SEQUENCE,"Styrke Dag1");return}
+  if(p.id==="volleyball"){startStrengthSequence(STRENGTH_SEQUENCE_DAY2,"Styrke Dag2");return}
   workout=JSON.parse(JSON.stringify(p));resetTimer();showScreen("timer")
 }
 
@@ -109,9 +160,10 @@ function formatElapsed(sec){
   const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;
   return h>0?`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`:`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
 }
-function startStrengthSequence(){
+function startStrengthSequence(sequence=STRENGTH_SEQUENCE,programName="Styrke Dag1"){
+  sequenceProgramName=programName;
   pauseTimer();
-  sequenceQueue=STRENGTH_SEQUENCE.map(x=>({...x}));
+  sequenceQueue=sequence.map(x=>({...x}));
   sequenceCompleted=[];
   sequenceSkipped=[];
   sequenceElapsedSeconds=0;
@@ -200,7 +252,7 @@ function finishStrengthSequence(){
   e.sequencePostponeBtn.disabled=true;
   workout={
     id:"emom",
-    name:"Styrke Dag1",
+    name:sequenceProgramName,
     category:"Styrke",
     work:0,rest:0,rounds:STRENGTH_SEQUENCE.length,
     exercises:[]
@@ -208,7 +260,7 @@ function finishStrengthSequence(){
   elapsed=sequenceElapsedSeconds;
   finished=true;
   saveRating=4;
-  e.saveSummary.textContent=`Styrke Dag1 · ${formatElapsed(sequenceElapsedSeconds)} · ${sequenceCompleted.length} fullført`;
+  e.saveSummary.textContent=`${sequenceProgramName} · ${formatElapsed(sequenceElapsedSeconds)} · ${sequenceCompleted.length} fullført`;
   setTimeout(()=>{
     e.workoutComment.value="";
     e.effortSelect.value="Bra";
