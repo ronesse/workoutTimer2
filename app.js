@@ -4,7 +4,7 @@
 const PRESETS=[
 {id:"kettlebell",name:"Kettlebell 60/30",category:"Kettlebell",icon:"kettlebell.png",description:"20 runder · 30 min",work:60,rest:30,rounds:20,workWarning:10,restWarning:5,exercises:["Kettlebell swing","Goblet squat","Push press","Utfall","Renegade row"]},
 {id:"tabata",name:"Tabata 20/10",category:"Kondisjon",icon:"🔥",description:"8 runder · 4 min",work:20,rest:10,rounds:8,workWarning:5,restWarning:3,exercises:[]},
-{id:"emom",name:sequenceProgramName,category:"Styrke",icon:"🏋️",description:"43 aktiviteter · oppgavebasert",work:0,rest:0,rounds:0,workWarning:0,restWarning:0,exercises:[]},
+{id:"emom",name:"Styrke Dag1",category:"Styrke",icon:"🏋️",description:"43 aktiviteter · oppgavebasert",work:0,rest:0,rounds:0,workWarning:0,restWarning:0,exercises:[]},
 {id:"volleyball",name:"Styrke Dag2",category:"Styrke",icon:"🏋️",description:"46 aktiviteter · oppgavebasert",work:0,rest:0,rounds:0,workWarning:0,restWarning:0,exercises:[]},
 {id:"strength",name:"Styrke 45/15",category:"Styrke",icon:"💪",description:"12 runder · 12 min",work:45,rest:15,rounds:12,workWarning:10,restWarning:5,exercises:[]}
 ];

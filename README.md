@@ -31,3 +31,7 @@ Kettlebell 60/30 bruker nå `kettlebell.png` i stedet for styrkeløfter-emoji.
 - Oppvarming: 2 runder med 6 øvelser.
 - Hoveddel: 3 komplette runder + Knebøy som aktivitet 43 / runde 4.
 - Postpone flytter aktiviteten til sist i samme gruppe og samme runde.
+
+## v5.1 FIXED
+- Rettet JavaScript-feil som gjorde at alle programknappene forsvant.
+- Styrke Dag1 og Styrke Dag2 er begge beholdt.
