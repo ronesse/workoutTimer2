@@ -24,3 +24,10 @@ Tidligere EMOM 10 er nå et oppgavebasert styrkeprogram:
 
 ## Kettlebell icon fix
 Kettlebell 60/30 bruker nå `kettlebell.png` i stedet for styrkeløfter-emoji.
+
+## v4 – Styrke Dag1
+- Tidligere Styrkeprogram heter nå Styrke Dag1.
+- 43 aktiviteter.
+- Oppvarming: 2 runder med 6 øvelser.
+- Hoveddel: 3 komplette runder + Knebøy som aktivitet 43 / runde 4.
+- Postpone flytter aktiviteten til sist i samme gruppe og samme runde.
